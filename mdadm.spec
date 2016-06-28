@@ -86,6 +86,9 @@ rm -rf %{buildroot}
 /etc/libreport/events.d/*
 
 %changelog
+* Tue Jun 28 2016 Unknown name 3.4-1
+- initial built with tito
+
 * Thu Sep 17 2015 Jes Sorensen <Jes.Sorensen@redhat.com> - 3.3.2-7
 - Fix race condition when assembling IMSM volumes with mdadm -As
 - Resolves bz1263205
