@@ -1,28 +1,8 @@
 Summary:     The mdadm program controls Linux md devices (software RAID arrays)
 Name:        mdadm
-Version:     3.3.2
-Release:     7%{?dist}
-Source:      http://www.kernel.org/pub/linux/utils/raid/mdadm/mdadm-%{version}.tar.xz
-Source1:     mdmonitor.init
-Source2:     raid-check
-Source3:     mdadm.rules
-Source4:     mdadm-raid-check-sysconfig
-Source5:     mdadm-cron
-Source6:     mdmonitor.service
-Source7:     mdadm.conf
-Source8:     mdadm_event.conf
-Patch1:      mdadm-3.3.2-IMSM-Clear-migration-record-on-disks-more-often.patch
-Patch2:      mdadm-3.3.2-fix-resize-of-array-component-size-to-32bits.patch
-Patch3:      mdadm-3.3.2-imsm-support-for-OROMs-shared-by-multiple-HBAs.patch
-Patch4:      mdadm-3.3.2-imsm-support-for-second-and-combined-AHCI-controller.patch
-Patch5:      mdadm-3.3.2-imsm-add-support-for-NVMe-devices.patch
-Patch6:      mdadm-3.3.2-imsm-detail-platform-improvements.patch
-Patch7:      mdadm-3.3.2-imsm-use-efivarfs-interface-for-reading-UEFI-variabl.patch
-Patch8:      mdadm-3.3.2-fix-problem-with-grow-continue.patch
-# RHEL customization patches
-Patch96:     mdadm-3.3.2-skip-rules.patch
-Patch97:     mdadm-3.3-udev.patch
-Patch98:     mdadm-2.5.2-static.patch
+Version:     3.4
+Release:     1%{?dist}
+Source:      %{name}-%{version}.tar.gz
 URL:         http://www.kernel.org/pub/linux/utils/raid/mdadm/
 License:     GPLv2+
 Group:       System Environment/Base
@@ -44,21 +24,7 @@ almost all functions without a configuration file, though a configuration
 file can be used to help with some common tasks.
 
 %prep
-%setup -q
-
-%patch1 -p1 -b .migration
-%patch2 -p1 -b .resize
-%patch3 -p1 -b .multihba
-%patch4 -p1 -b .secondahci
-%patch5 -p1 -b .nvme
-%patch6 -p1 -b .detail
-%patch7 -p1 -b .efivars
-%patch8 -p1 -b .grow
-
-# RHEL customization patches
-%patch96 -p1 -b .rules
-%patch97 -p1 -b .udev
-%patch98 -p1 -b .static
+%setup -q -n %{name}-%{version}
 
 %build
 make %{?_smp_mflags} CXFLAGS="$RPM_OPT_FLAGS" SYSCONFDIR="%{_sysconfdir}" mdadm mdmon
@@ -66,25 +32,25 @@ make %{?_smp_mflags} CXFLAGS="$RPM_OPT_FLAGS" SYSCONFDIR="%{_sysconfdir}" mdadm 
 %install
 rm -rf %{buildroot}
 make DESTDIR=%{buildroot} MANDIR=%{_mandir} BINDIR=%{_sbindir} SYSTEMD_DIR=%{_unitdir} install install-systemd
-install -Dp -m 755 %{SOURCE2} %{buildroot}%{_sbindir}/raid-check
-install -Dp -m 644 %{SOURCE3} %{buildroot}%{_udevrulesdir}/65-md-incremental.rules
-install -Dp -m 644 %{SOURCE4} %{buildroot}%{_sysconfdir}/sysconfig/raid-check
-install -Dp -m 644 %{SOURCE5} %{buildroot}%{_sysconfdir}/cron.d/raid-check
+install -Dp -m 755 raid-check %{buildroot}%{_sbindir}/raid-check
+install -Dp -m 644 mdadm.rules %{buildroot}%{_udevrulesdir}/65-md-incremental.rules
+install -Dp -m 644 mdadm-raid-check-sysconfig %{buildroot}%{_sysconfdir}/sysconfig/raid-check
+install -Dp -m 644 mdadm-cron %{buildroot}%{_sysconfdir}/cron.d/raid-check
 mkdir -p -m 700 %{buildroot}/var/run/mdadm
 
 # systemd
 mkdir -p %{buildroot}%{_unitdir}
-install -m644 %{SOURCE6} %{buildroot}%{_unitdir}
+install -m644 mdmonitor.service %{buildroot}%{_unitdir}
 
 # tmpfile
 mkdir -p %{buildroot}%{_tmpfilesdir}
-install -m 0644 %{SOURCE7} %{buildroot}%{_tmpfilesdir}/%{name}.conf
+install -m 0644 mdadm.conf %{buildroot}%{_tmpfilesdir}/%{name}.conf
 mkdir -p %{buildroot}%{_localstatedir}/run/
 install -d -m 0710 %{buildroot}%{_localstatedir}/run/%{name}/
 
 # abrt
 mkdir -p %{buildroot}/etc/libreport/events.d
-install -m644 %{SOURCE8} %{buildroot}/etc/libreport/events.d
+install -m644 mdadm_event.conf %{buildroot}/etc/libreport/events.d
 
 %clean
 rm -rf %{buildroot}
