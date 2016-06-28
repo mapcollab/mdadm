@@ -5,6 +5,10 @@
 ENV{ANACONDA}=="?*", GOTO="md_inc_end"
 # assemble md arrays
 
+# In Fedora we handle the raid components in 65-md-incremental.rules so that
+# we can do things like honor anaconda command line options and such
+GOTO="md_inc_end"
+
 SUBSYSTEM!="block", GOTO="md_inc_end"
 
 # handle potential components of arrays (the ones supported by md)
