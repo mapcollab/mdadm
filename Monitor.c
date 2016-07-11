@@ -1096,7 +1096,7 @@ int WaitClean(char *dev, int sock, int verbose)
 	if (rv) {
 		int state_fd = sysfs_open(fd2devnm(fd), NULL, "array_state");
 		char buf[20];
-		int delay = 5000;
+		int delay = 1000;
 
 		/* minimize the safe_mode_delay and prepare to wait up to 5s
 		 * for writes to quiesce
