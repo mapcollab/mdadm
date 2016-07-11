@@ -1104,7 +1104,7 @@ int WaitClean(char *dev, int sock, int verbose)
 		sysfs_set_safemode(mdi, 1);
 
 		/* wait for array_state to be clean */
-		while (1) {
+		while (delay >= 0) {
 			rv = read(state_fd, buf, sizeof(buf));
 			if (rv < 0)
 				break;
@@ -1115,7 +1115,7 @@ int WaitClean(char *dev, int sock, int verbose)
 				break;
 			lseek(state_fd, 0, SEEK_SET);
 		}
-		if (rv < 0)
+		if (rv < 0 || delay < 0)
 			rv = 1;
 		else if (fping_monitor(sock) == 0 ||
 			 ping_monitor(mdi->text_version) == 0) {
