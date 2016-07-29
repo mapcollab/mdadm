@@ -1,7 +1,7 @@
 Summary:     The mdadm program controls Linux md devices (software RAID arrays)
 Name:        mdadm
 Version:     3.4
-Release:     1%{?dist}
+Release:     2%{?dist}
 Source:      %{name}-%{version}.tar.gz
 URL:         http://www.kernel.org/pub/linux/utils/raid/mdadm/
 License:     GPLv2+
@@ -86,6 +86,16 @@ rm -rf %{buildroot}
 /etc/libreport/events.d/*
 
 %changelog
+* Fri Jul 29 2016 Michal Gawlik <michal.gawlik@thalesgroup.com> 3.4-2
+- tito: switch to release tagger (michal.gawlik@thalesgroup.com)
+- Revert "Assemble: don't assemble IMSM array without OROM."
+  (tomasz.rostanski@thalesgroup.com.pl)
+- Revert "Assemble: really don't assemble IMSM array without OROM."
+  (tomasz.rostanski@thalesgroup.com.pl)
+- MPS WaitClean: lower timeout (michal.gawlik@thalesgroup.com)
+- WaitClean: fix infinite loop in timeout handling code
+  (michal.gawlik@thalesgroup.com)
+
 * Tue Jun 28 2016 Unknown name 3.4-1
 - initial built with tito
 
