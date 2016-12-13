@@ -179,9 +179,13 @@ int add_dev(const char *name, const struct stat *stb, int flag, struct FTW *s)
 {
 	struct stat st;
 
+	/* don't enter /dev/shm to avoid triggering SELinux denials */
+	if (S_ISDIR(stb->st_mode) && strcmp(name, "/dev/shm")==0)
+		return FTW_SKIP_SUBTREE;
+
 	if (S_ISLNK(stb->st_mode)) {
 		if (stat(name, &st) != 0)
-			return 0;
+			return FTW_CONTINUE;
 		stb = &st;
 	}
 
@@ -199,7 +203,7 @@ int add_dev(const char *name, const struct stat *stb, int flag, struct FTW *s)
 		}
 	}
 
-	return 0;
+	return FTW_CONTINUE;
 }
 
 #ifndef HAVE_NFTW
@@ -254,7 +258,7 @@ char *map_dev_preferred(int major, int minor, int create,
 		}
 		if (lstat(dev, &stb) == 0 && S_ISLNK(stb.st_mode))
 			dev = "/dev/.";
-		nftw(dev, add_dev, 10, FTW_PHYS);
+		nftw(dev, add_dev, 10, FTW_PHYS | FTW_ACTIONRETVAL);
 		devlist_ready=1;
 		did_check = 1;
 	}
