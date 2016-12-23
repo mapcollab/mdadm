@@ -1,7 +1,7 @@
 Summary:     The mdadm program controls Linux md devices (software RAID arrays)
 Name:        mdadm
 Version:     3.4
-Release:     2%{?dist}
+Release:     3%{?dist}
 Source:      %{name}-%{version}.tar.gz
 URL:         http://www.kernel.org/pub/linux/utils/raid/mdadm/
 License:     GPLv2+
@@ -86,6 +86,10 @@ rm -rf %{buildroot}
 /etc/libreport/events.d/*
 
 %changelog
+* Fri Dec 23 2016 Michal Gawlik <michal.gawlik@thalesgroup.com> 3.4-3
+- /dev traversal: do not enter /dev/shm to avoid SELinux denials
+  (michal.gawlik@thalesgroup.com)
+
 * Fri Jul 29 2016 Michal Gawlik <michal.gawlik@thalesgroup.com> 3.4-2
 - tito: switch to release tagger (michal.gawlik@thalesgroup.com)
 - Revert "Assemble: don't assemble IMSM array without OROM."
